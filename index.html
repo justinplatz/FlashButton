@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="em">
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<!-- <link rel="stylesheet" type="text/css" href="style1.css">
+ --><link rel="stylesheet" type="text/css" href="normalize.css" />
+<link rel="stylesheet" type="text/css" href="demo.css" />
+<link rel="stylesheet" type="text/css" href="component.css" />
+<link href='http://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body>        
+
+
+  <script src="http://cdn.pubnub.com/pubnub-3.7.1.min.js"></script>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+<!-- <h1 id="before" style="font-size: 3em;margin-bottom: 0;-webkit-font-smoothing: antialiased;text-align: center;color:red;"> 
+JUST PUSH THE BUTTON!</h1> -->
+<div class="container demo-1" >
+  <div class="content" >
+    <div id="large-header" class="large-header">
+          <canvas id="demo-canvas"></canvas>
+          <h1 class="main-title" id="before">One Button + <span class="thin">Infinite Possibilities</span></h1> <br><br>
+    </div>
+  </div>
+</div>
+
+<script src="js/TweenLite.min.js"></script>
+<script src="js/EasePack.min.js"></script>
+<script src="js/rAF.js"></script>
+<script src="js/demo-1.js"></script>
+
+
+<div class="confirm-box" id="confirm">
+  <p style="font-family: 'Raleway', Calibri, Arial, sans-serif;
+    font-weight: 600;" >Do you really want to buy this?</p>
+  <a href="javascript:void(0)" onclick="orderFunc();" title="Yes" style=" width: 50vw;
+    margin-left: 25vw;">Yes!</a>
+  <a href="javascript:void(0)" onclick="myJsFunc();" title="No" style=" width: 50vw;
+    margin-left: 25vw;">Nah!</a>
+</div>
+
+<div id="orderStatus" style="font-size: 2em;position: absolute;left: 45vw;bottom: 5vh;color: white;z-index: 1;"> </div>
+
+<script>
+    var password = "";
+    var pubnub = PUBNUB.init({
+      publish_key: 'demo',
+      subscribe_key: 'demo'
+    });
+
+    document.getElementById("confirm").style.visibility = "hidden";
+
+
+    pubnub.subscribe({
+      channel: 'hi_world',
+      message: function(m){
+        console.log(m);
+        password = m;
+        document.getElementById("before").style.visibility = "hidden";
+        document.getElementById("confirm").style.visibility = "visible";
+      },
+      error: function (error) {
+        // Handle error here
+        console.log(JSON.stringify(error));
+      }
+    });
+
+
+  
+
+    function myJsFunc () {
+      document.getElementById("before").style.visibility = "visible";
+      document.getElementById("confirm").style.visibility = "hidden";
+    }
+
+    function orderFunc () {
+      $.post("order.php?p=" + password,function(data){
+        $('#orderStatus').html(data);
+      }) 
+
+      document.getElementById("confirm").style.visibility = "hidden";
+      document.getElementById("before").style.visibility = "visible";
+      password = "";
+
+    }
+</script>
+
+
+
+
+
+
+</body>
+</html>
